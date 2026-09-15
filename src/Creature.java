@@ -11,6 +11,12 @@ public class Creature {
 
     public Creature(int x, int y) {
 
+        if (x < 0 || y < 0) {
+            throw new IllegalArgumentException(
+                "Creature position cannot be negative."
+            );
+        }
+
         this.x = x;
         this.y = y;
 
@@ -72,5 +78,4 @@ public class Creature {
         this.y = y;
     }
 }
-
     

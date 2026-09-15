@@ -17,11 +17,11 @@ public class SimulationPanel extends JPanel {
 
         preyList = new ArrayList<Prey>();
 
-        preyList.add(new Prey(100, 100));
-        preyList.add(new Prey(200, 400));
-        preyList.add(new Prey(350, 150));
-        preyList.add(new Prey(500, 400));
-        preyList.add(new Prey(650, 200));
+        addPrey(100, 100);
+        addPrey(200, 400);
+        addPrey(350, 150);
+        addPrey(500, 400);
+        addPrey(650, 200);
 
         predator = new Predator(400, 300);
 
@@ -29,7 +29,6 @@ public class SimulationPanel extends JPanel {
 
             timerCount = timerCount + 1;
 
-            // Move and flee
             for (int i = 0; i < preyList.size(); i++) {
 
                 Prey prey = preyList.get(i);
@@ -46,14 +45,12 @@ public class SimulationPanel extends JPanel {
                 );
             }
 
-            // Only chase if prey still exist
             if (preyList.size() > 0) {
 
                 Prey closestPrey = preyList.get(0);
 
                 int closestDistance = Integer.MAX_VALUE;
 
-                // Find closest prey
                 for (int i = 0; i < preyList.size(); i++) {
 
                     Prey currentPrey = preyList.get(i);
@@ -81,7 +78,6 @@ public class SimulationPanel extends JPanel {
                     getHeight()
                 );
 
-                // Check if predator caught prey
                 for (int i = 0; i < preyList.size(); i++) {
 
                     if (predator.catches(preyList.get(i))) {
@@ -95,7 +91,6 @@ public class SimulationPanel extends JPanel {
                 }
             }
 
-            // New prey is born about every 5 seconds
             if (timerCount >= 250) {
 
                 if (preyList.size() < 12) {
@@ -108,9 +103,7 @@ public class SimulationPanel extends JPanel {
                         (int)(Math.random() *
                         Math.max(1, getHeight() - 30));
 
-                    preyList.add(
-                        new Prey(newX, newY)
-                    );
+                    addPrey(newX, newY);
                 }
 
                 timerCount = 0;
@@ -122,22 +115,37 @@ public class SimulationPanel extends JPanel {
         timer.start();
     }
 
+    private void addPrey(int x, int y) {
+
+        try {
+
+            preyList.add(
+                new Prey(x, y)
+            );
+
+        } catch (IllegalArgumentException e) {
+
+            System.out.println(
+                "Could not create prey: " + e.getMessage()
+            );
+        }
+    }
+
     @Override
     protected void paintComponent(Graphics g) {
 
         super.paintComponent(g);
 
-        // Draw prey
         for (int i = 0; i < preyList.size(); i++) {
             preyList.get(i).draw(g);
         }
 
-        // Draw predator
         predator.draw(g);
 
-        // Information
         g.setColor(Color.BLACK);
-        g.setFont(new Font("Arial", Font.BOLD, 20));
+        g.setFont(
+            new Font("Arial", Font.BOLD, 20)
+        );
 
         g.drawString(
             "Prey caught: " + caughtCount,
