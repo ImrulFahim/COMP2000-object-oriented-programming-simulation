@@ -1,22 +1,23 @@
 import javax.swing.JPanel;
 import javax.swing.Timer;
-import java.awt.Color;
 import java.awt.Graphics;
 
 public class SimulationPanel extends JPanel {
 
-    private int x = 50;
-    private int y = 250;
+    private Creature prey;
+    private Creature predator;
 
     public SimulationPanel() {
 
-        Timer timer = new Timer(30, e -> {
+        prey = new Prey(100, 100);
 
-            x = x + 2;
+        predator = new Predator(500, 300);
 
-            if (x > getWidth()) {
-                x = 0;
-            }
+        Timer timer = new Timer(20, e -> {
+
+            prey.move(getWidth(), getHeight());
+
+            predator.move(getWidth(), getHeight());
 
             repaint();
         });
@@ -29,7 +30,8 @@ public class SimulationPanel extends JPanel {
 
         super.paintComponent(g);
 
-        g.setColor(Color.BLUE);
-        g.fillOval(x, y, 30, 30);
+        prey.draw(g);
+
+        predator.draw(g);
     }
 }
