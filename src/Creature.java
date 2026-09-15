@@ -5,10 +5,8 @@ public class Creature {
 
     private int x;
     private int y;
-
     private int xSpeed;
     private int ySpeed;
-
     private int size;
 
     public Creature(int x, int y) {
@@ -64,6 +62,14 @@ public class Creature {
 
     public int getSize() {
         return size;
+    }
+
+    protected void setX(int x) {
+        this.x = x;
+    }
+
+    protected void setY(int y) {
+        this.y = y;
     }
 }
 
