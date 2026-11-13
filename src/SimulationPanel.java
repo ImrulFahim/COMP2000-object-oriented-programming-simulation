@@ -4,11 +4,13 @@ import java.awt.Graphics;
 import java.awt.Color;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class SimulationPanel extends JPanel {
 
     private ArrayList<Prey> preyList;
     private Predator predator;
+    private TargetingStrategy targetingStrategy = new NearestPreyStrategy();
 
     private int caughtCount = 0;
     private int timerCount = 0;
@@ -47,36 +49,10 @@ public class SimulationPanel extends JPanel {
 
             if (preyList.size() > 0) {
 
-                Prey closestPrey = preyList.get(0);
-
-                int closestDistance = Integer.MAX_VALUE;
-
-                for (int i = 0; i < preyList.size(); i++) {
-
-                    Prey currentPrey = preyList.get(i);
-
-                    int xDifference =
-                        predator.getX() - currentPrey.getX();
-
-                    int yDifference =
-                        predator.getY() - currentPrey.getY();
-
-                    int distance =
-                        xDifference * xDifference +
-                        yDifference * yDifference;
-
-                    if (distance < closestDistance) {
-
-                        closestDistance = distance;
-                        closestPrey = currentPrey;
-                    }
-                }
-
-                predator.chase(
-                    closestPrey,
-                    getWidth(),
-                    getHeight()
-                );
+                targetingStrategy.selectTarget(predator, preyList)
+                    .ifPresent(target -> predator.chase(
+                        target, getWidth(), getHeight()
+                    ));
 
                 for (int i = 0; i < preyList.size(); i++) {
 
@@ -113,6 +89,10 @@ public class SimulationPanel extends JPanel {
         });
 
         timer.start();
+    }
+
+    public void setTargetingStrategy(TargetingStrategy strategy) {
+        targetingStrategy = Objects.requireNonNull(strategy);
     }
 
     private void addPrey(int x, int y) {
